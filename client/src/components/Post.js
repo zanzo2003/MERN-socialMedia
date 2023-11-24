@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom'
 import moment from 'moment';
 import { HeartFilled, CommentOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
-import { addComment, getAllPosts, likeOrUnlikePost } from '../redux/actions/postActions';
+import { addComment, getAllPosts, likeOrUnlikePost, editPost } from '../redux/actions/postActions';
 import { useDispatch, useSelector } from 'react-redux';
 import { Modal, Row, Col, Input } from 'antd';
 const { TextArea } = Input;
@@ -16,31 +16,33 @@ function Post({ post, postInProfilePage }) {
   const alreadyLiked = post.likes.find(
     (obj) => obj.user.toString() == currentuser._id);
 
-  const { likeOrUnlikeLoading, addCommentLoading } = useSelector(
+  const { likeOrUnlikeLoading, addCommentLoading, editPostLoading } = useSelector(
     (state) => state.alertsReducer
   );
 
   useEffect(() => {
     dispatch(getAllPosts());
-  }, [likeOrUnlikeLoading, addCommentLoading]);
+  }, [likeOrUnlikeLoading, addCommentLoading, editPostLoading]);
 
   const [commentModalVisibility, setCommentModalVisibility] = useState(false);
   const [comment, setComment] = useState("");
   const { users } = useSelector((state) => state.userReducer);
+  const [description, setdescription] = useState(post.description);
+  const [editModalVisibility, setEditModalVisibility] = useState(false);
 
 
   return (
     <div className='post-frame'>
       <div className="d-flex post-header">
         <div className="d-flex">
-          {post.user.profilePicUrl == "" ? (<span className="profilepic1 d-flex align-items-center">{post.user.username[0]}</span>) : (<img src={post.user.profilePicUrl} className='pfp'/>)}
+          {post.user.profilePicUrl == "" ? (<span className="profilepic1 d-flex align-items-center">{post.user.username[0]}</span>) : (<img src={post.user.profilePicUrl} className='pfp' />)}
           <Link className='ml-2 post-username'>{post.user.username}</Link>
         </div>
         <div>
           <p className='post-date'>{moment(post.createdAt).format('MMM DD YYYY h:mm A')}</p>
         </div>
       </div>
-      <img src={post.image} alt="post image" className={postInProfilePage? 'postinprofile':'postimage'} />
+      <img src={post.image} alt="post image" className={postInProfilePage ? 'postinprofile' : 'postimage'} />
       <p className='post-description'>Caption : {post.description}</p>
 
       <div className={postInProfilePage ? 'd-flex align-items-center justify-content-between' : 'd-flex align-items-center'}>
@@ -53,14 +55,14 @@ function Post({ post, postInProfilePage }) {
           <p>{post.comments.length}</p>
         </div>
 
-        {(post.user._id == currentuser._id && postInProfilePage==true) && (<>
-         <div className='del-btn'>
-           <DeleteOutlined/>
-        </div>
-        <div className='ed-btn'>
-           <EditOutlined />
-        </div>
-        </>)} 
+        {(post.user._id == currentuser._id && postInProfilePage == true) && (<>
+          <div className='del-btn'>
+            <DeleteOutlined />
+          </div>
+          <div className='ed-btn'>
+            <EditOutlined  onClick={()=>{setEditModalVisibility(true)}}/>
+          </div>
+        </>)}
 
       </div>
 
@@ -103,9 +105,18 @@ function Post({ post, postInProfilePage }) {
             })}
           </Col>
         </Row>
-
-
       </Modal>
+
+      <Modal title="Edit description" closable={false}
+          onOk={() => {
+            dispatch(editPost({ _id: post._id, description: description }))
+            setEditModalVisibility(false)
+          }}
+          okText='edit' open={editModalVisibility} onCancel={() => { setEditModalVisibility(false) }}>
+
+          <Input value={description} onChange={(e) => { setdescription(e.target.value) }} />
+
+        </Modal>
 
     </div>
   )

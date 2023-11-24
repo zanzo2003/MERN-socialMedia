@@ -51,7 +51,7 @@ function Profile({ match }) {
           </Row>
 
           {(user.followers.find(obj => obj == currentuser._id) || user.privateAccount == false || user._id == currentuser._id) ?
-            (<Row justify='center'>
+            (<Row justify='center' gutter={16}>
               {usersposts.map(post => {
                 return (
                   <Col lg={8} sm={24} xs={24}>
