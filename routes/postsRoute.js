@@ -31,7 +31,7 @@ router.get("/getallposts", async(req, res)=>{
 
     try {
 
-        const posts = await post.find().populate('user');
+        const posts = await post.find().populate('user').sort({createdAt: -1}).exec();
         res.send(posts);
         
     } catch (error) {
@@ -105,6 +105,17 @@ router.post("/likeorunlikepost", async (req, res) => {
       console.log(error);
       return res.status(400).json(error);
     }
+  });
+
+  router.post("/deletepost", async(req, res) => {
+
+    try {
+      await post.deleteOne({_id : req.body._id})
+      res.send('Post deleted successfully');
+    } catch (error) {
+      return res.status(400).json(error);
+    }
+    
   });
 
   

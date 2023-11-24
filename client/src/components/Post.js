@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom'
 import moment from 'moment';
 import { HeartFilled, CommentOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
-import { addComment, getAllPosts, likeOrUnlikePost, editPost } from '../redux/actions/postActions';
+import { addComment, getAllPosts, likeOrUnlikePost, editPost, deletePost } from '../redux/actions/postActions';
 import { useDispatch, useSelector } from 'react-redux';
 import { Modal, Row, Col, Input } from 'antd';
 const { TextArea } = Input;
@@ -16,13 +16,13 @@ function Post({ post, postInProfilePage }) {
   const alreadyLiked = post.likes.find(
     (obj) => obj.user.toString() == currentuser._id);
 
-  const { likeOrUnlikeLoading, addCommentLoading, editPostLoading } = useSelector(
+  const { likeOrUnlikeLoading, addCommentLoading, editPostLoading, deletePostLoading } = useSelector(
     (state) => state.alertsReducer
   );
 
   useEffect(() => {
     dispatch(getAllPosts());
-  }, [likeOrUnlikeLoading, addCommentLoading, editPostLoading]);
+  }, [likeOrUnlikeLoading, addCommentLoading, editPostLoading, deletePostLoading]);
 
   const [commentModalVisibility, setCommentModalVisibility] = useState(false);
   const [comment, setComment] = useState("");
@@ -56,7 +56,9 @@ function Post({ post, postInProfilePage }) {
         </div>
 
         {(post.user._id == currentuser._id && postInProfilePage == true) && (<>
-          <div className='del-btn'>
+          <div className='del-btn' onClick={()=>{
+             dispatch(deletePost({_id : post._id}))
+           }}>
             <DeleteOutlined />
           </div>
           <div className='ed-btn'>

@@ -51,6 +51,7 @@ const DefaultLayout = (props) => {
             padding: 0,
             background: colorBgContainer,
           }}
+          className='position-static'
         >
           <div className='d-flex justify-content-between align-items-center layout'>
             <h4 id='user-name'>{user.username}</h4>
@@ -77,7 +78,7 @@ const DefaultLayout = (props) => {
         </Content>
       </Layout>
 
-      <Sider trigger={null} collapsible collapsed={collapsed}>
+      <Sider trigger={null} collapsible collapsed={collapsed} style={{position: 'sticky', top: 0, bottom: 0, overflow: 'auto', height: '100vh'}}>
         <div className="demo-logo-vertical" />
         <Menu
           theme="dark"

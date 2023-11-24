@@ -237,3 +237,22 @@ input[type="file"] {
     height: 200px;
   }
 }
+@media only screen and (max-width : 500px){
+
+  .postimage{
+    height : 200px !important;
+  }
+  .logotext{
+    display: none !important
+  }
+
+  .all-user-search{
+    width: '100%'
+  }
+
+  .left-title{
+    font-size: 30px;
+    font-weight : bold !important;
+  }
+  
+}
